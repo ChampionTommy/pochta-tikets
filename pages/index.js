@@ -14,22 +14,20 @@ import h from '../styles/globals.module.scss';
 export async function getServerSideProps() {
     const response = await fetch('https://631ad617fae3df4dcfed3acd.mockapi.io/boxes');
     const data = await response.json();
-
     if (!data) {
         return {
             notFound: true,
         }
     }
     return {
-        props: {mockData: data}, // will be passed to the page component as props
+        props: {mockData: data},
     }
 }
 
-const Index = ( {mockData} ) => {
-
+const _index = ({mockData} ) => {
+    const {colorMode} = useColorMode();
     const [loadVisible, setLoadVisible] = React.useState(25);
     const [inputTxt, setInputTxt] = React.useState('');
-
 
     const filtered = mockData.filter((item) => {
         return item[0].includes(inputTxt);
@@ -40,6 +38,7 @@ const Index = ( {mockData} ) => {
     const loadMore = () => {
         setLoadVisible((prev) => prev + 15);
     };
+
     return (
         <>
             <Header onChange={handleNameChange}/>
@@ -56,9 +55,10 @@ const Index = ( {mockData} ) => {
                         })}
                     </Grid>
                     <Button
-                        border='1px' borderColor='#eaeaea'
+                        bg={colorMode === "light" ? "gray.50" : "gray.700"}
+                        border='1px' borderColor={colorMode === "light" ? "gray.100" : "gray.700"}
                         w="100%"
-                        onClick={loadMore} bg={useColorMode === 'white' ? 'black' : 'white'}
+                        onClick={loadMore}
                         Style={loadVisible === filtered.length ? 'display:none' : ''}
                     >
                         {loadVisible === filtered.length ? 'Запрещено' : 'Загрузить еще 15'} 📦
@@ -69,4 +69,4 @@ const Index = ( {mockData} ) => {
     );
 }
 
-export default Index
+export default _index
